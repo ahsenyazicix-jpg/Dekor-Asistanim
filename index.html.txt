@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dekor Asistanım — Proje Takip</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFF8F0;--card:#FFFFFF;--text:#1A1118;--muted:#7A6E78;--border:#EDE0D4;--w1:#E84855;--w1l:#FFF0F1;--w1m:#FDDDE0;--w2:#F4741E;--w2l:#FFF4EC;--w2m:#FDDEC6;--w3:#2BBFA0;--w3l:#EDFAF6;--w3m:#BEF0E7;--w4:#7B4FD6;--w4l:#F3EEFF;--w4m:#DDD0F9;--fe:#3B82F6;--fe-l:#EFF6FF;--be:#10B981;--be-l:#ECFDF5;--db:#F59E0B;--db-l:#FFFBEB;--td:#EC4899;--td-l:#FDF2F8;--tm:#8B5CF6;--tm-l:#F5F3FF;--claude:#6B47DC;--claude-l:#EDE9FF}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+#login-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1A1118,#2D1B4E);display:flex;align-items:center;justify-content:center;z-index:999;padding:24px}
+#login-overlay.hidden{display:none}
+.login-box{background:#fff;border-radius:20px;padding:40px 36px;max-width:380px;width:100%;text-align:center}
+.login-logo{font-family:'Syne',sans-serif;font-size:1.6rem;font-weight:800;background:linear-gradient(90deg,#E84855,#7B4FD6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.login-sub{font-size:0.85rem;color:#7A6E78;margin-bottom:28px}
+.login-box input{width:100%;border:2px solid #EDE0D4;border-radius:10px;padding:12px 16px;font-size:0.95rem;font-family:'Plus Jakarta Sans',sans-serif;color:#1A1118;outline:none;transition:border-color 0.2s;margin-bottom:14px}
+.login-box input:focus{border-color:#7B4FD6}
+.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,#7B4FD6,#E84855);color:#fff;border:none;border-radius:10px;font-size:0.95rem;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:opacity 0.15s}
+.login-btn:hover{opacity:0.88}
+.login-note{font-size:0.72rem;color:#BBB0C0;margin-top:14px}
+.hero{background:linear-gradient(135deg,#1A1118 0%,#2D1B4E 50%,#1A1118 100%);padding:48px 40px 40px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 20% 50%,rgba(232,72,85,0.25) 0%,transparent 50%),radial-gradient(circle at 80% 30%,rgba(123,79,214,0.3) 0%,transparent 50%);pointer-events:none}
+.hero-eyebrow{font-size:0.7rem;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:14px;position:relative}
+.hero h1{font-family:'Syne',sans-serif;font-size:clamp(2.4rem,8vw,5rem);font-weight:800;line-height:0.95;letter-spacing:-0.03em;position:relative}
+.hero h1 .line1{display:block;background:linear-gradient(90deg,#E84855,#F4741E,#FFBE0B);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 .line2{display:block;background:linear-gradient(90deg,#7B4FD6,#2BBFA0,#3B82F6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-student{margin-top:16px;font-size:1rem;color:rgba(255,255,255,0.7);position:relative}
+.hero-student span{font-weight:700;color:#FFBE0B}
+.hero-pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px;position:relative}
+.hero-pill{font-size:0.7rem;font-weight:600;padding:4px 12px;border-radius:99px;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.65);background:rgba(255,255,255,0.07)}
+.progress-section{background:var(--card);border-bottom:1px solid var(--border);padding:18px 40px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.prog-label-big{font-family:'Syne',sans-serif;font-size:2rem;font-weight:700;min-width:68px}
+.prog-track{flex:1;min-width:160px;background:#F0E8F5;border-radius:99px;height:10px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#E84855,#F4741E,#FFBE0B,#2BBFA0,#7B4FD6);background-size:300% 100%;animation:shimmer 3s linear infinite;transition:width 0.5s cubic-bezier(0.4,0,0.2,1)}
+@keyframes shimmer{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+.prog-count{font-size:0.82rem;color:var(--muted);font-weight:500;white-space:nowrap}
+.save-status{font-size:0.75rem;font-weight:600;color:#2BBFA0;opacity:0;transition:opacity 0.3s;margin-left:auto;white-space:nowrap}
+main{max-width:960px;margin:0 auto;padding:32px 24px 60px}
+.tech-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.tech-chip{display:flex;align-items:center;gap:7px;background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:7px 13px;font-size:0.78rem;font-weight:600;transition:transform 0.15s}
+.tech-chip:hover{transform:translateY(-2px)}
+.tech-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tech-sub{font-size:0.67rem;font-weight:400;color:var(--muted);margin-left:2px}
+.legend{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px}
+.tag{font-size:0.68rem;font-weight:700;padding:3px 9px;border-radius:99px;letter-spacing:0.04em;white-space:nowrap}
+.tag-fe{background:var(--fe-l);color:var(--fe)}.tag-be{background:var(--be-l);color:#059669}.tag-db{background:var(--db-l);color:#D97706}.tag-3d{background:var(--td-l);color:#BE185D}.tag-all{background:var(--tm-l);color:#6D28D9}
+.week-block{margin-bottom:24px;background:var(--card);border-radius:18px;border:2px solid var(--border);overflow:hidden;transition:box-shadow 0.2s;animation:fadeUp 0.5s ease both}
+.week-block:hover{box-shadow:0 8px 32px rgba(0,0,0,0.07)}
+.week-block:nth-child(1){animation-delay:0.05s}.week-block:nth-child(2){animation-delay:0.12s}.week-block:nth-child(3){animation-delay:0.19s}.week-block:nth-child(4){animation-delay:0.26s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.week-head{padding:14px 22px;display:flex;align-items:center;gap:12px}
+.w1 .week-head{background:var(--w1l);border-bottom:2px solid var(--w1m)}.w2 .week-head{background:var(--w2l);border-bottom:2px solid var(--w2m)}.w3 .week-head{background:var(--w3l);border-bottom:2px solid var(--w3m)}.w4 .week-head{background:var(--w4l);border-bottom:2px solid var(--w4m)}
+.week-num{font-family:'Syne',sans-serif;font-size:0.7rem;font-weight:800;padding:4px 11px;border-radius:99px;letter-spacing:0.06em;text-transform:uppercase}
+.w1 .week-num{background:var(--w1);color:#fff}.w2 .week-num{background:var(--w2);color:#fff}.w3 .week-num{background:var(--w3);color:#fff}.w4 .week-num{background:var(--w4);color:#fff}
+.week-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700}
+.w1 .week-title{color:#9B1825}.w2 .week-title{color:#923D08}.w3 .week-title{color:#0C6B57}.w4 .week-title{color:#4B2C9E}
+.week-prog-mini{margin-left:auto;font-size:0.72rem;font-weight:600;color:var(--muted);background:rgba(255,255,255,0.7);padding:3px 9px;border-radius:99px}
+.item{border-bottom:1.5px solid #F5EEE8}.item:last-child{border-bottom:none}
+.item-top{display:flex;align-items:flex-start;gap:12px;padding:12px 22px 4px}
+.item-top input[type=checkbox]{width:18px;height:18px;margin-top:1px;flex-shrink:0;cursor:pointer;accent-color:var(--w1)}
+.w2 .item-top input{accent-color:var(--w2)}.w3 .item-top input{accent-color:var(--w3)}.w4 .item-top input{accent-color:var(--w4)}
+.item-label{font-size:0.87rem;font-weight:500;line-height:1.5;cursor:pointer;display:flex;align-items:flex-start;gap:7px;flex-wrap:wrap;color:var(--text);transition:color 0.2s}
+.item-label.done{text-decoration:line-through;color:#BBB0C0}
+.hint{margin:4px 22px 11px 52px;font-size:0.77rem;line-height:1.65;color:#5A5260;background:#FAFAFA;border-radius:10px;padding:9px 13px;border-left:3px solid var(--border)}
+.hint b{font-weight:600;color:var(--text)}.hint code{font-family:'Courier New',monospace;font-size:0.74rem;background:#EDE8F0;padding:1px 5px;border-radius:4px;color:#5B2D8E}
+.claude-btn{display:inline-flex;align-items:center;gap:5px;margin-top:7px;font-size:0.71rem;font-weight:700;background:var(--claude-l);color:var(--claude);border-radius:99px;padding:4px 11px;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;transition:background 0.15s,transform 0.15s}
+.claude-btn:hover{background:#DDD5FF;transform:translateY(-1px)}.claude-btn::before{content:'✦';font-size:0.64rem}
+.notes-block{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:20px 24px;margin-top:8px}
+.notes-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.notes-icon{width:28px;height:28px;background:linear-gradient(135deg,#F4741E,#FFBE0B);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.notes-title{font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700}
+textarea{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:0.85rem;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--bg);resize:vertical;min-height:80px;outline:none;transition:border-color 0.2s;line-height:1.6}
+textarea:focus{border-color:#7B4FD6}
+.save-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.save-btn{font-size:0.8rem;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;padding:8px 22px;border-radius:99px;background:linear-gradient(135deg,#7B4FD6,#E84855);color:white;border:none;cursor:pointer;transition:opacity 0.15s,transform 0.15s}
+.save-btn:hover{opacity:0.88;transform:translateY(-1px)}
+.saved-msg{font-size:0.75rem;font-weight:600;color:#2BBFA0;opacity:0;transition:opacity 0.3s}
+footer{text-align:center;padding:28px;font-size:0.7rem;color:#C8B8D0;letter-spacing:0.06em;font-weight:500}
+</style>
+</head>
+<body>
+
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">DEKOR ASİSTANIM</div>
+    <div class="login-sub">Proje takip çizelgene hoş geldin.<br>Adını gir, kaldığın yerden devam et.</div>
+    <input type="text" id="login-name" placeholder="Adın ve soyadın..." maxlength="60" autocomplete="off">
+    <input type="text" id="login-group" placeholder="Grup numarası (ör: Grup 3)" maxlength="40" autocomplete="off">
+    <button class="login-btn" onclick="doLogin()">Başla →</button>
+    <div class="login-note">Değişikliklerin otomatik kaydedilir ve öğretmenin görebilir.</div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow">Yazılım Projesi · 4 Hafta · Grup</div>
+  <h1><span class="line1">DEKOR</span><span class="line2">ASİSTANIM</span></h1>
+  <div class="hero-student">Hoş geldin, <span id="student-name-display">—</span></div>
+  <div class="hero-pills">
+    <span class="hero-pill">Three.js</span><span class="hero-pill">Vanilla JS</span><span class="hero-pill">Node.js + Express</span><span class="hero-pill">MySQL</span><span class="hero-pill">JWT</span>
+  </div>
+</div>
+
+<div class="progress-section">
+  <div class="prog-label-big" id="prog-pct">%0</div>
+  <div class="prog-track"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+  <div class="prog-count" id="prog-count">0 / 32 tamamlandı</div>
+  <div class="save-status" id="save-status"></div>
+</div>
+
+<main>
+  <div class="tech-row">
+    <div class="tech-chip"><span class="tech-dot" style="background:#E84855"></span>Three.js<span class="tech-sub">3D + 360°</span></div>
+    <div class="tech-chip"><span class="tech-dot" style="background:#F4741E"></span>Vanilla JS<span class="tech-sub">Drag & Drop</span></div>
+    <div class="tech-chip"><span class="tech-dot" style="background:#2BBFA0"></span>Node.js + Express<span class="tech-sub">REST API</span></div>
+    <div class="tech-chip"><span class="tech-dot" style="background:#3B82F6"></span>MySQL<span class="tech-sub">Veritabanı</span></div>
+    <div class="tech-chip"><span class="tech-dot" style="background:#7B4FD6"></span>JWT<span class="tech-sub">Oturum</span></div>
+  </div>
+  <div class="legend">
+    <span class="tag tag-fe">FE — arayüz</span><span class="tag tag-be">BE — backend</span><span class="tag tag-db">DB — veritabanı</span><span class="tag tag-3d">3D — Three.js</span><span class="tag tag-all">TM — tüm grup</span>
+  </div>
+
+  <div class="week-block w1">
+    <div class="week-head"><span class="week-num">Hafta 1</span><span class="week-title">Kurulum &amp; Temel Yapı</span><span class="week-prog-mini" id="wp1">0/8</span></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="1_1" data-week="1"><label class="item-label">Proje klasör yapısı oluşturuldu <span class="tag tag-all">TM</span></label></div><div class="hint"><b>Ne yapılacak:</b> Ana klasör içinde <code>frontend/</code>, <code>backend/</code>, <code>database/</code> alt klasörleri açılır.<br><button class="claude-btn" onclick="askClaude('Bir web projesi için frontend/backend/database klasör yapısı nasıl olmalı? Açıklamalı göster.')">Claude'a sor → Klasör yapısı nasıl olmalı?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="1_2" data-week="1"><label class="item-label">GitHub reposu açıldı, takım eklendi <span class="tag tag-all">TM</span></label></div><div class="hint"><b>Ne yapılacak:</b> GitHub'da yeni repo açın, takım arkadaşlarını collaborator ekleyin. Her kişi kendi branch'inde çalışsın.<br><button class="claude-btn" onclick="askClaude('GitHub\'da ekip projesi için branch stratejisi nasıl olmalı? Yeni başlayanlar için açıkla.')">Claude'a sor → Branch stratejisi nasıl kurulur?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="1_3" data-week="1"><label class="item-label">Node.js + Express kurulumu yapıldı <span class="tag tag-be">BE</span></label></div><div class="hint"><b>Ne yapılacak:</b> <code>backend/</code> klasöründe <code>npm init</code> çalıştırın, <code>express</code> ve <code>cors</code> kurun. Bir "merhaba dünya" endpoint yazıp test edin.<br><button class="claude-btn" onclick="askClaude('Node.js Express ile ilk sunucuyu kurmak istiyorum. Adım adım yaz, açıklamalarını da ekle.')">Claude'a sor → Express sunucu nasıl kurulur?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="1_4" data-week="1"><label class="item-label">MySQL veritabanı ve tablolar tasarlandı <span class="tag tag-db">DB</span></label></div><div class="hint"><b>Ne yapılacak:</b> Kağıt üzerinde hangi tablolar gerektiğini çizin. Tablolar arası ilişkileri (foreign key) belirleyin.<br><button class="claude-btn" onclick="askClaude('Dekor asistanı projesi için MySQL tablo tasarımı yap: kullanıcı girişi, tasarım kaydetme ve mobilya fiyatları olacak.')">Claude'a sor → Tablo tasarımı nasıl yapılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="1_5" data-week="1"><label class="item-label">users, designs, items tabloları oluşturuldu <span class="tag tag-db">DB</span></label></div><div class="hint"><b>Ne yapılacak:</b> MySQL Workbench veya phpMyAdmin ile tablolar oluşturun. Her tablo için birkaç örnek satır ekleyin.<br><button class="claude-btn" onclick="askClaude('MySQL\'de users, designs, furniture_items tabloları için CREATE TABLE SQL kodlarını yaz. İlişkileri de ekle.')">Claude'a sor → CREATE TABLE kodları nasıl yazılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="1_6" data-week="1"><label class="item-label">Three.js import edildi, boş sahne açıldı <span class="tag tag-3d">3D</span></label></div><div class="hint"><b>Ne yapılacak:</b> Three.js'i CDN ile HTML'e ekleyin. Ekranda siyah canvas açın, basit dönen küp koyun — çalıştığını görmek için yeterli.<br><button class="claude-btn" onclick="askClaude('Three.js CDN ile HTML dosyasına nasıl eklenir? Ekranda dönen bir küp gösteren minimal kod yaz.')">Claude'a sor → Three.js nasıl başlatılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="1_7" data-week="1"><label class="item-label">Giriş / kayıt HTML sayfaları hazırlandı <span class="tag tag-fe">FE</span></label></div><div class="hint"><b>Ne yapılacak:</b> <code>login.html</code> ve <code>register.html</code> sayfaları oluşturun. Şimdilik sadece form alanları ve butonlar yeterli.<br><button class="claude-btn" onclick="askClaude('Kullanıcı giriş ve kayıt formları için sade, modern HTML+CSS kodu yaz. Backend bağlantısı olmadan sadece arayüz.')">Claude'a sor → Login formu nasıl yapılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="1_8" data-week="1"><label class="item-label">JWT ile kullanıcı giriş API'si yazıldı <span class="tag tag-be">BE</span></label></div><div class="hint"><b>Ne yapılacak:</b> <code>/api/login</code> ve <code>/api/register</code> endpoint'leri yazın. Başarılı girişte JWT token üretin. Postman ile test edin.<br><button class="claude-btn" onclick="askClaude('Node.js Express ile JWT kullanarak kullanıcı giriş API\'si yaz. Postman\'de nasıl test ederim de açıkla.')">Claude'a sor → JWT giriş API'si nasıl yazılır?</button></div></div>
+  </div>
+
+  <div class="week-block w2">
+    <div class="week-head"><span class="week-num">Hafta 2</span><span class="week-title">3D Oda &amp; Pencere Ekleme</span><span class="week-prog-mini" id="wp2">0/8</span></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="2_1" data-week="2"><label class="item-label">Oda boyutu formu çalışıyor (m²) <span class="tag tag-fe">FE</span></label></div><div class="hint"><b>Ne yapılacak:</b> Kullanıcıdan en ve boy bilgisi alın. "Oda Oluştur" butonuna tıklayınca değerleri Three.js sahnesine iletin.<br><button class="claude-btn" onclick="askClaude('HTML formdan alınan genişlik ve yükseklik değerlerini JavaScript ile nasıl okur ve başka bir fonksiyona nasıl iletirim?')">Claude'a sor → Formdan değer nasıl okunur?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="2_2" data-week="2"><label class="item-label">Girilen boyuta göre 3D oda oluşturuluyor <span class="tag tag-3d">3D</span></label></div><div class="hint"><b>Ne yapılacak:</b> Three.js'te zemin, tavan ve 4 duvar olarak 6 düzlem (PlaneGeometry) oluşturun. Kullanıcının ölçülerini sahne boyutuna ölçeklendirin.<br><button class="claude-btn" onclick="askClaude('Three.js ile kullanıcının girdiği en ve boy değerlerine göre içi görünen 3D oda nasıl yapılır? Duvar, zemin ve tavan olsun.')">Claude'a sor → 3D oda nasıl yapılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="2_3" data-week="2"><label class="item-label">OrbitControls ile 360° döndürme çalışıyor <span class="tag tag-3d">3D</span></label></div><div class="hint"><b>Ne yapılacak:</b> OrbitControls eklentisini ekleyin. Fare ile sürükleyince oda etrafında dönme, scroll ile zoom çalışsın.<br><button class="claude-btn" onclick="askClaude('Three.js OrbitControls CDN ile nasıl eklenir? Fare ile 360 derece dönen kamera kurulumu kodunu yaz.')">Claude'a sor → OrbitControls nasıl kurulur?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="2_4" data-week="2"><label class="item-label">Pencere popup formu açılıyor (adet + boyut) <span class="tag tag-fe">FE</span></label></div><div class="hint"><b>Ne yapılacak:</b> Oda oluşturulunca otomatik açılan modal tasarlayın. Pencere adedi, genişlik ve yükseklik alanları bulunsun.<br><button class="claude-btn" onclick="askClaude('JavaScript ile otomatik açılan bir modal popup nasıl yapılır? Kapat butonu ve form alanları olsun, CSS de ekle.')">Claude'a sor → Modal popup nasıl yapılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="2_5" data-week="2"><label class="item-label">Sol panele pencere itemı ekleniyor <span class="tag tag-fe">FE</span></label></div><div class="hint"><b>Ne yapılacak:</b> Formdan gelen pencere sayısı kadar sol panelde kart oluşturun. Her kart boyut bilgisini göstersin ve sürüklenebilir olsun.<br><button class="claude-btn" onclick="askClaude('JavaScript ile dinamik olarak HTML element oluşturup bir listeye ekleme nasıl yapılır? Her elemana sürüklenebilir (draggable) özellik ekle.')">Claude'a sor → Dinamik element nasıl eklenir?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="2_6" data-week="2"><label class="item-label">Pencere itemı sürüklenip duvara yerleştirilebiliyor <span class="tag tag-fe">FE</span></label></div><div class="hint"><b>Ne yapılacak:</b> HTML5 Drag &amp; Drop API kullanın. Canvas üzerine bırakınca Three.js'te o konuma nesne eklensin.<br><button class="claude-btn" onclick="askClaude('HTML5 Drag and Drop API ile bir elementi sürükleyip canvas üzerine bırakma olayını nasıl yakalarım? Three.js ile birlikte çalışan örnek yaz.')">Claude'a sor → Drag & Drop nasıl yapılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="2_7" data-week="2"><label class="item-label">MySQL'den mobilya listesi API'si yazıldı <span class="tag tag-be">BE</span></label></div><div class="hint"><b>Ne yapılacak:</b> <code>GET /api/furniture</code> endpoint'i yazın, mobilya tablosunu JSON döndürsün. Frontend'den fetch ile test edin.<br><button class="claude-btn" onclick="askClaude('Node.js Express\'te MySQL\'den veri çekip JSON olarak döndüren bir GET endpoint nasıl yazılır? mysql2 paketi kullanarak göster.')">Claude'a sor → GET API nasıl yazılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="2_8" data-week="2"><label class="item-label">Örnek mobilya verileri DB'ye eklendi (fiyat dahil) <span class="tag tag-db">DB</span></label></div><div class="hint"><b>Ne yapılacak:</b> furniture_items tablosuna en az 10–15 mobilya ekleyin. Her birinin adı, kategorisi ve fiyatı olsun.<br><button class="claude-btn" onclick="askClaude('MySQL furniture_items tablosuna gerçekçi Türkçe mobilya verileri ekleyen INSERT SQL kodları yaz. Kategori ve fiyat sütunları da olsun.')">Claude'a sor → INSERT verileri nasıl yazılır?</button></div></div>
+  </div>
+
+  <div class="week-block w3">
+    <div class="week-head"><span class="week-num">Hafta 3</span><span class="week-title">Sağ Menü &amp; Tasarım Kaydetme</span><span class="week-prog-mini" id="wp3">0/8</span></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="3_1" data-week="3"><label class="item-label">Sağ menü paneli (Sims tarzı) tasarlandı <span class="tag tag-fe">FE</span></label></div><div class="hint"><b>Ne yapılacak:</b> Ekranın sağına sabit panel. "Mobilyalar", "Malzemeler", "Fikir Öner" sekmeleri olsun.<br><button class="claude-btn" onclick="askClaude('Ekranın sağında sabit duran, sekmeli bir yan menü paneli HTML+CSS ile nasıl yapılır? Sims oyunu build mode tarzında olsun.')">Claude'a sor → Sekmeli yan menü nasıl yapılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="3_2" data-week="3"><label class="item-label">Mobilya kategorileri menüde listeleniyor <span class="tag tag-fe">FE</span></label></div><div class="hint"><b>Ne yapılacak:</b> API'den çekilen mobilya verilerini kategoriye göre gruplayın ve sağ panelde kartlar halinde listeleyin.<br><button class="claude-btn" onclick="askClaude('JavaScript\'te fetch ile API\'den gelen JSON veriyi kategoriye göre gruplayıp HTML\'de dinamik liste olarak nasıl gösteririm?')">Claude'a sor → JSON veriyi kategoriye nasıl gruplarım?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="3_3" data-week="3"><label class="item-label">Mobilya seçilince sahneye ekleniyor <span class="tag tag-3d">3D</span></label></div><div class="hint"><b>Ne yapılacak:</b> Sağ menüden mobilyaya tıklanınca sahneye BoxGeometry ekleyin. Üstüne isim etiketi koyun.<br><button class="claude-btn" onclick="askClaude('Three.js\'te bir butona tıklayınca sahneye yeni bir BoxGeometry nesnesi eklemek ve üstüne metin etiketi koymak nasıl yapılır?')">Claude'a sor → Sahneye nesne nasıl eklenir?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="3_4" data-week="3"><label class="item-label">Malzeme listesi (tadilat) menüde görünüyor <span class="tag tag-fe">FE</span></label></div><div class="hint"><b>Ne yapılacak:</b> Boya, zemin kaplaması, duvar kağıdı DB'ye ekleyin. "Malzemeler" sekmesinde m² fiyatıyla listeleyin.<br><button class="claude-btn" onclick="askClaude('Tadilat malzemeleri için ayrı bir MySQL tablosu nasıl tasarlanır? Metrekare bazlı fiyatlandırma için hangi sütunlar gerekir?')">Claude'a sor → Malzeme tablosu nasıl tasarlanır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="3_5" data-week="3"><label class="item-label">Sağ alt köşede toplam tutar hesaplanıyor <span class="tag tag-fe">FE</span></label></div><div class="hint"><b>Ne yapılacak:</b> Eklenen her mobilyanın fiyatını dizide tutun. Her değişiklikte toplam otomatik güncellensin.<br><button class="claude-btn" onclick="askClaude('JavaScript\'te bir alışveriş sepeti mantığı nasıl kurulur? Ekleme ve çıkarmada toplam fiyatı otomatik hesaplayan kod yaz.')">Claude'a sor → Toplam fiyat nasıl hesaplanır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="3_6" data-week="3"><label class="item-label">Tasarım kaydet API'si yazıldı (designs tablosu) <span class="tag tag-be">BE</span></label></div><div class="hint"><b>Ne yapılacak:</b> <code>POST /api/designs</code> endpoint'i yazın. Nesnelerin konum ve ID bilgilerini JSON alıp MySQL'e kaydetsin.<br><button class="claude-btn" onclick="askClaude('Three.js sahnesindeki nesnelerin konum ve rotasyon bilgilerini JSON olarak backend\'e gönderip MySQL\'e kaydetmek için ne yapmalıyım?')">Claude'a sor → Tasarım kaydetme API'si nasıl yazılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="3_7" data-week="3"><label class="item-label">Yarım bırakılan tasarım otomatik kaydediliyor <span class="tag tag-be">BE</span></label></div><div class="hint"><b>Ne yapılacak:</b> <code>setInterval</code> ile her 30 saniyede otomatik kaydedin. <code>beforeunload</code> ile sayfa kapanmadan da kayıt yapın.<br><button class="claude-btn" onclick="askClaude('JavaScript setInterval ile otomatik kayıt nasıl yapılır? Kullanıcı sayfayı kapatmadan önce kayıt tetiklemek için beforeunload eventi nasıl kullanılır?')">Claude'a sor → Otomatik kayıt nasıl yapılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="3_8" data-week="3"><label class="item-label">Profil sayfası: tasarım listesi görüntüleniyor <span class="tag tag-fe">FE</span></label></div><div class="hint"><b>Ne yapılacak:</b> <code>profile.html</code>'de kullanıcının tasarımları kart görünümünde listelensin. Her karta "Devam Et" butonu ekleyin.<br><button class="claude-btn" onclick="askClaude('Tinkercad profil sayfası gibi kullanıcının projelerini gösteren bir HTML sayfası nasıl yapılır?')">Claude'a sor → Profil sayfası nasıl yapılır?</button></div></div>
+  </div>
+
+  <div class="week-block w4">
+    <div class="week-head"><span class="week-num">Hafta 4</span><span class="week-title">Test, Düzeltme &amp; Sunum</span><span class="week-prog-mini" id="wp4">0/8</span></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="4_1" data-week="4"><label class="item-label">Tüm sayfalar tarayıcıda hatasız açılıyor <span class="tag tag-all">TM</span></label></div><div class="hint"><b>Ne yapılacak:</b> Chrome, Edge ve Firefox'ta açın. F12 konsolunda kırmızı hata olmamalı.<br><button class="claude-btn" onclick="askClaude('Tarayıcı konsolunda şu hatayı alıyorum: [HATAYI BURAYA YAPISTIR]. Ne anlama geliyor ve nasıl düzeltirim?')">Claude'a sor → Hata mesajı nasıl çözülür?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="4_2" data-week="4"><label class="item-label">Giriş / çıkış akışı baştan sona test edildi <span class="tag tag-all">TM</span></label></div><div class="hint"><b>Ne yapılacak:</b> Kayıt → giriş → tasarım → kaydet → çıkış → tekrar giriş → profilde görünüyor mu? En az 3 kez test edin.<br><button class="claude-btn" onclick="askClaude('Web uygulamasında kullanıcı akışı nasıl test edilir? El ile test için adım adım kontrol listesi oluştur.')">Claude'a sor → Test nasıl yapılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="4_3" data-week="4"><label class="item-label">3D oda farklı boyutlarda test edildi <span class="tag tag-3d">3D</span></label></div><div class="hint"><b>Ne yapılacak:</b> 10m², 25m², 50m² girin. Oda orantılı mı? Kamera içeride kalıyor mu? Kontrol edin.<br><button class="claude-btn" onclick="askClaude('Three.js\'te farklı boyutlarda oda oluşturduğumda kamera her zaman içinde kalacak şekilde başlangıç pozisyonunu nasıl otomatik ayarlarım?')">Claude'a sor → Kamera pozisyonu nasıl ayarlanır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="4_4" data-week="4"><label class="item-label">Fiyat toplamı doğru hesaplanıyor (test verileri) <span class="tag tag-fe">FE</span></label></div><div class="hint"><b>Ne yapılacak:</b> 5–6 mobilya ekleyin, ekrandaki toplam hesap makinesiyle aynı çıkmalı. Ondalıklı fiyatlarda da test edin.<br><button class="claude-btn" onclick="askClaude('JavaScript\'te ondalıklı sayıları toplarken neden yanlış sonuç çıkar? Fiyat hesaplarında doğru yuvarlama nasıl yapılır?')">Claude'a sor → Ondalıklı hesap hatası neden olur?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="4_5" data-week="4"><label class="item-label">Tasarım kaydedilip profilde geri açılıyor <span class="tag tag-be">BE</span></label></div><div class="hint"><b>Ne yapılacak:</b> Tasarım oluştur → kaydet → sayfayı kapat → giriş yap → "Devam Et" → sahne kaldığı yerden açılmalı.<br><button class="claude-btn" onclick="askClaude('MySQL\'den çekilen tasarım JSON verisini Three.js sahnesine nasıl geri yüklerim? Nesneleri konumlarıyla yeniden oluşturan kod yaz.')">Claude'a sor → Tasarım nasıl geri yüklenir?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="4_6" data-week="4"><label class="item-label">Konsol hataları temizlendi <span class="tag tag-all">TM</span></label></div><div class="hint"><b>Ne yapılacak:</b> F12 → Console. Tüm kırmızı error mesajlar çözülmeli. Test <code>console.log</code>'ları silin.<br><button class="claude-btn" onclick="askClaude('Kodumda şu konsol uyarısını alıyorum: [UYARIYI BURAYA YAPISTIR]. Bu ne demek ve nasıl düzeltirim?')">Claude'a sor → Konsol uyarısı nasıl çözülür?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="4_7" data-week="4"><label class="item-label">README ve proje dokümantasyonu yazıldı <span class="tag tag-all">TM</span></label></div><div class="hint"><b>Ne yapılacak:</b> GitHub'a <code>README.md</code> ekleyin: ne yaptığı, kurulum adımları, teknolojiler, ekran görüntüleri.<br><button class="claude-btn" onclick="askClaude('Dekor Asistanım projesi için profesyonel bir GitHub README.md dosyası yaz. Teknolojiler, kurulum ve özellikler bölümleri olsun.')">Claude'a sor → README nasıl yazılır?</button></div></div>
+    <div class="item"><div class="item-top"><input type="checkbox" data-id="4_8" data-week="4"><label class="item-label">Sunum (demo + anlatım) hazırlandı <span class="tag tag-all">TM</span></label></div><div class="hint"><b>Ne yapılacak:</b> 5–7 dakika: projenin amacı → teknolojiler → canlı demo → en zor problem ve çözümü. Her kişi bir bölüm anlatsın.<br><button class="claude-btn" onclick="askClaude('Yazılım projesi sunumu için 5 dakikalık anlatım akışı öner. Teknik dinleyici için ne vurgulamamız gerekir?')">Claude'a sor → Sunum akışı nasıl kurulur?</button></div></div>
+  </div>
+
+  <div class="notes-block">
+    <div class="notes-head"><div class="notes-icon">📝</div><div class="notes-title">Notlarım &amp; öğretmene mesaj</div></div>
+    <textarea id="notes" placeholder="Buraya not ekleyebilirsin. Öğretmenin de görebilir."></textarea>
+    <div class="save-row">
+      <button class="save-btn" onclick="saveNotes()">Kaydet</button>
+      <span class="saved-msg" id="saved-msg">✓ Kaydedildi</span>
+    </div>
+  </div>
+</main>
+<footer>DEKOR ASİSTANIM · Yazılım Projesi Takip · 4 Hafta</footer>
+
+<script>
+const PID = 'dekor_asistanim';
+let studentName = '', studentGroup = '', saveTimer = null;
+
+function doLogin() {
+  const n = document.getElementById('login-name').value.trim();
+  const g = document.getElementById('login-group').value.trim();
+  if (!n) { document.getElementById('login-name').focus(); return; }
+  studentName = n; studentGroup = g || 'Grup ?';
+  localStorage.setItem(PID+'_name', studentName);
+  localStorage.setItem(PID+'_group', studentGroup);
+  document.getElementById('login-overlay').classList.add('hidden');
+  document.getElementById('student-name-display').textContent = studentName;
+  initChecks();
+  loadFromCloud();
+}
+
+function initChecks() {
+  const saved = JSON.parse(localStorage.getItem(PID+'_checks') || '{}');
+  document.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    if (saved[cb.dataset.id]) { cb.checked = true; markDone(cb, true); }
+    cb.addEventListener('change', () => {
+      markDone(cb, cb.checked);
+      persistLocal(); updateProg(); debouncedSave();
+    });
+  });
+  document.getElementById('notes').value = localStorage.getItem(PID+'_notes') || '';
+  updateProg();
+}
+
+function markDone(cb, done) {
+  cb.closest('.item-top').querySelector('.item-label').classList.toggle('done', done);
+}
+
+function persistLocal() {
+  const s = {};
+  document.querySelectorAll('input[type=checkbox]').forEach(cb => { s[cb.dataset.id] = cb.checked; });
+  localStorage.setItem(PID+'_checks', JSON.stringify(s));
+}
+
+async function loadFromCloud() {
+  try {
+    const r = await window.storage.get(PID+':'+studentName, true);
+    if (!r) return;
+    const data = JSON.parse(r.value);
+    document.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      const v = !!data.checks[cb.dataset.id];
+      cb.checked = v; markDone(cb, v);
+    });
+    if (data.notes) document.getElementById('notes').value = data.notes;
+    persistLocal();
+    localStorage.setItem(PID+'_notes', data.notes || '');
+    updateProg();
+  } catch(e) {}
+}
+
+async function saveToCloud() {
+  const checks = {};
+  document.querySelectorAll('input[type=checkbox]').forEach(cb => { checks[cb.dataset.id] = cb.checked; });
+  const notes = document.getElementById('notes').value;
+  const all = document.querySelectorAll('input[type=checkbox]');
+  const done = [...all].filter(c => c.checked).length;
+  const payload = {
+    student: studentName, group: studentGroup,
+    checks, notes,
+    progress: { done, total: all.length, pct: Math.round(done/all.length*100) },
+    updatedAt: new Date().toISOString()
+  };
+  try {
+    await window.storage.set(PID+':'+studentName, JSON.stringify(payload), true);
+    showSaveStatus('✓ Buluta kaydedildi');
+  } catch(e) {
+    showSaveStatus('⚠ Yerel kaydedildi');
+  }
+}
+
+function showSaveStatus(msg) {
+  const el = document.getElementById('save-status');
+  el.textContent = msg; el.style.opacity = '1';
+  setTimeout(() => { el.style.opacity = '0'; }, 2200);
+}
+
+function debouncedSave() { clearTimeout(saveTimer); saveTimer = setTimeout(saveToCloud, 1500); }
+
+function saveNotes() {
+  localStorage.setItem(PID+'_notes', document.getElementById('notes').value);
+  const m = document.getElementById('saved-msg');
+  m.style.opacity = '1'; setTimeout(() => { m.style.opacity = '0'; }, 2000);
+  saveToCloud();
+}
+
+function updateProg() {
+  const all = document.querySelectorAll('input[type=checkbox]');
+  const done = [...all].filter(c => c.checked).length;
+  const pct = Math.round(done/all.length*100);
+  document.getElementById('prog').style.width = pct+'%';
+  document.getElementById('prog-pct').textContent = '%'+pct;
+  document.getElementById('prog-count').textContent = done+' / '+all.length+' tamamlandı';
+  [1,2,3,4].forEach(w => {
+    const wcbs = document.querySelectorAll(`input[data-week="${w}"]`);
+    const wd = [...wcbs].filter(c => c.checked).length;
+    const el = document.getElementById('wp'+w);
+    if (el) el.textContent = wd+'/'+wcbs.length;
+  });
+}
+
+function askClaude(q) { window.open('https://claude.ai/new?q='+encodeURIComponent(q), '_blank'); }
+
+window.addEventListener('load', () => {
+  const n = localStorage.getItem(PID+'_name');
+  if (n) {
+    studentName = n; studentGroup = localStorage.getItem(PID+'_group') || 'Grup ?';
+    document.getElementById('login-overlay').classList.add('hidden');
+    document.getElementById('student-name-display').textContent = studentName;
+    initChecks(); loadFromCloud();
+  }
+});
+</script>
+</body>
+</html>
