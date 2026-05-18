@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Destek | Dekor Asistanım</title>
+
+<style>
+/* === RESET === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f2e6d9;
+}
+
+/* === NAVBAR === */
+.navbar {
+    height: 80px;
+    background-color: #b89474;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    color: white;
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+    font-size: 14px;
+}
+
+.menu a:hover {
+    text-decoration: underline;
+}
+
+/* === SAYFA === */
+.page {
+    min-height: calc(100vh - 80px);
+    padding: 60px;
+}
+
+/* BAŞLIK */
+.page h1 {
+    font-size: 48px;
+    color: #b89474;
+    margin-bottom: 20px;
+}
+
+.page p.description {
+    font-size: 18px;
+    color: #7a5c45;
+    margin-bottom: 50px;
+    max-width: 800px;
+}
+
+/* === KARTLAR === */
+.support-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 6px;
+    padding: 30px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+    color: #b89474;
+    margin-bottom: 15px;
+    font-size: 20px;
+}
+
+.card p {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* === İLETİŞİM === */
+.contact {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid #d9c3aa;
+}
+
+.contact h2 {
+    color: #b89474;
+    margin-bottom: 20px;
+}
+
+.contact p {
+    color: #555;
+    margin-bottom: 10px;
+}
+
+/* === MOBİL === */
+@media (max-width: 900px) {
+    .page {
+        padding: 30px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="logo">DEKOR</div>
+
+    <nav class="menu">
+        <a href="index.html">Anasayfa</a>
+        <a href="destek.html">Destek</a>
+        <a href="hakkimizda.html">Hakkımızda</a>
+        <a href="iletisim.html">İletişim</a>
+    </nav>
+</header>
+
+<main class="page">
+    <h1>Destek Merkezi</h1>
+    <p class="description">
+        Dekor Asistanım platformunu kullanırken ihtiyaç duyduğunuz tüm bilgilere,
+        rehberlere ve destek kanallarına buradan ulaşabilirsiniz.
+    </p>
+
+    <section class="support-grid">
+        <div class="card">
+            <h3>Hesap & Üyelik</h3>
+            <p>
+                Hesap oluşturma, giriş problemleri, şifre yenileme ve kullanıcı bilgileri
+                ile ilgili tüm işlemler bu başlık altında yer alır.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>3D Tasarım & Showroom</h3>
+            <p>
+                3 boyutlu tasarım araçlarının kullanımı, showroom görüntüleme,
+                ürün ekleme ve sahne düzenleme konularında destek alabilirsiniz.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Fiyatlandırma & Teklif</h3>
+            <p>
+                Otomatik fiyat hesaplama, teklif oluşturma,
+                güncel fiyat listeleri ve kampanyalar hakkında bilgi alın.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Sıkça Sorulan Sorular</h3>
+            <p>
+                En çok karşılaşılan soruların cevaplarını
+                hızlıca bulabilir, zamandan tasarruf edebilirsiniz.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Teknik Sorunlar</h3>
+            <p>
+                Sistem hataları, performans problemleri veya
+                beklenmeyen davranışlar için teknik destek alın.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Eğitim & Rehberler</h3>
+            <p>
+                Platformu daha verimli kullanmanız için hazırlanan
+                eğitim içerikleri ve kullanım rehberleri.
+            </p>
+        </div>
+    </section>
+
+    <section class="contact">
+        <h2>Bizimle İletişime Geçin</h2>
+        <p><strong>E-posta:</strong> destek@dekorasistanim.com</p>
+        <p><strong>Çalışma Saatleri:</strong> Hafta içi 09:00 – 18:00</p>
+        <p>
+            Destek talepleriniz en kısa sürede ilgili ekiplerimiz tarafından
+            değerlendirilir.
+        </p>
+    </section>
+</main>
+
+</body>
+</html>

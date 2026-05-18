@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Dekor Asistaným</title>
+
+<style>
+/* === RESET & SCROLL KÝLÝT === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 1000px;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* === NAVBAR === */
+.navbar {
+    height: 60px;
+    background-color: #b89474;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    color: white;
+}
+
+.menu a {
+    color: white;
+    text-decoration: none;
+    margin-left: 25px;
+    font-size: 14px;
+}
+
+.menu a:hover {
+    text-decoration: underline;
+}
+
+/* === HERO === */
+.hero {
+    height: calc(100vh - 80px);
+    display: flex;
+    overflow: hidden;
+}
+
+/* SOL GÖRSEL */
+.hero-image {
+    width: 40%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.hero-image img {
+    width: 100%;
+    height: 110%;
+    object-fit: cover;
+    display: block;
+}
+
+/* SAÐ ÝÇERÝK */
+.hero-content {
+    width: 60%;
+    background-color: #f2e6d9;
+    padding: 50px;
+    overflow: hidden;
+}
+
+.hero-content h1 {
+    font-size: 64px;
+    color: #b89474;
+}
+
+.hero-content p {
+    margin-top: 20px;
+    font-size: 18px;
+    color: #7a5c45;
+}
+
+/* BUTONLAR */
+.buttons {
+    margin-top: 40px;
+    display: flex;
+    gap: 20px;
+}
+
+.btn {
+    padding: 14px 28px;
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.primary {
+    background-color: #b89474;
+    color: white;
+}
+
+.secondary {
+    border: 1px solid #b89474;
+    color: #b89474;
+}
+
+/* === MOBÝL === */
+@media (max-width: 900px) {
+    html, body {
+        overflow-y: auto;
+    }
+
+    .hero {
+        height: auto;
+        flex-direction: column;
+    }
+
+    .hero-image,
+    .hero-content {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+    <div class="logo"></div>
+
+    <!-- TÜRKÇE KARAKTER SORUNSUZ MENÜ -->
+    <nav class="menu">
+        <a href="index.html">Anasayfa</a>
+        <a href="destek.html">Destek</a>
+        <a href="hakkimizda.html">Hakk&#305;m&#305;zda</a>
+        <a href="iletisim.html">&#304;leti&#351;im</a>
+    </nav>
+</header>
+
+<section class="hero">
+    <div class="hero-image">
+        <img src="foto.gif" alt="Dekor">
+    </div>
+
+    <div class="hero-content">
+        <h1>DEKOR ASÝSTANIM</h1>
+        <p>3 Boyutlu Mekan ve Mobilya Tasarým & Fiyatlandýrma Platformu</p>
+
+        <div class="buttons">
+            <a href="showroom.html" class="btn primary">SHOWROOM</a>
+            <a href="nasil-calisir.html" class="btn secondary" target="_blank">
+                ? Nas&#305;l &#199;al&#305;&#351;&#305;r?
+            </a>
+        </div>
+    </div>
+</section>
+
+</body>
+</html>
