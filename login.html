@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dekor Asistanım - Giriş</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #1a1118, #2d1b4e);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  width: 400px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+h1 {
+  text-align: center;
+  font-size: 1.8rem;
+  background: linear-gradient(90deg, #e84855, #7b4fd6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+}
+p { text-align: center; color: #888; margin-bottom: 30px; font-size: 0.9rem; }
+.tabs { display: flex; margin-bottom: 24px; border-radius: 10px; overflow: hidden; border: 2px solid #ede0d4; }
+.tab {
+  flex: 1; padding: 10px; text-align: center; cursor: pointer;
+  font-weight: 600; font-size: 0.9rem; color: #888; background: #f9f9f9;
+  transition: all 0.2s;
+}
+.tab.active { background: #7b4fd6; color: white; }
+input {
+  width: 100%; padding: 12px 16px; margin-bottom: 14px;
+  border: 2px solid #ede0d4; border-radius: 10px;
+  font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+}
+input:focus { border-color: #7b4fd6; }
+button {
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, #7b4fd6, #e84855);
+  color: white; border: none; border-radius: 10px;
+  font-size: 1rem; font-weight: 700; cursor: pointer;
+  transition: opacity 0.2s;
+}
+button:hover { opacity: 0.88; }
+.mesaj { text-align: center; margin-top: 14px; font-size: 0.9rem; color: #2bbfa0; }
+.hata { color: #e84855; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>DEKOR ASİSTANIM</h1>
+  <p>Hayalindeki odayı tasarla</p>
+  <div class="tabs">
+    <div class="tab active" onclick="sekmeAc('giris')">Giriş Yap</div>
+    <div class="tab" onclick="sekmeAc('kayit')">Kayıt Ol</div>
+  </div>
+  <div id="giris-form">
+    <input type="email" id="giris-email" placeholder="E-posta adresi">
+    <input type="password" id="giris-sifre" placeholder="Şifre">
+    <button onclick="girisYap()">Giriş Yap</button>
+  </div>
+  <div id="kayit-form" style="display:none">
+    <input type="text" id="kayit-ad" placeholder="Ad Soyad">
+    <input type="email" id="kayit-email" placeholder="E-posta adresi">
+    <input type="password" id="kayit-sifre" placeholder="Şifre">
+    <button onclick="kayitOl()">Kayıt Ol</button>
+  </div>
+  <div class="mesaj" id="mesaj"></div>
+</div>
+
+<script>
+function sekmeAc(sekme) {
+  document.getElementById('giris-form').style.display = sekme === 'giris' ? 'block' : 'none';
+  document.getElementById('kayit-form').style.display = sekme === 'kayit' ? 'block' : 'none';
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', (sekme === 'giris' && i === 0) || (sekme === 'kayit' && i === 1));
+  });
+}
+
+async function girisYap() {
+  const email = document.getElementById('giris-email').value;
+  const sifre = document.getElementById('giris-sifre').value;
+  const r = await fetch('http://localhost:3000/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, sifre })
+  });
+  const data = await r.json();
+  const mesaj = document.getElementById('mesaj');
+  if (data.token) {
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('ad', data.ad);
+    mesaj.className = 'mesaj';
+    mesaj.textContent = 'Giriş başarılı! Yönlendiriliyorsunuz...';
+    setTimeout(() => window.location.href = 'tasarim.html', 1500);
+  } else {
+    mesaj.className = 'mesaj hata';
+    mesaj.textContent = data.hata || 'Hata oluştu';
+  }
+}
+
+async function kayitOl() {
+  const ad = document.getElementById('kayit-ad').value;
+  const email = document.getElementById('kayit-email').value;
+  const sifre = document.getElementById('kayit-sifre').value;
+  const r = await fetch('http://localhost:3000/api/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ad, email, sifre })
+  });
+  const data = await r.json();
+  const mesaj = document.getElementById('mesaj');
+  if (data.mesaj) {
+    mesaj.className = 'mesaj';
+    mesaj.textContent = 'Kayıt başarılı! Giriş yapabilirsiniz.';
+    sekmeAc('giris');
+  } else {
+    mesaj.className = 'mesaj hata';
+    mesaj.textContent = data.hata || 'Hata oluştu';
+  }
+}
+</script>
+</body>
+</html>

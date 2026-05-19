@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dekor Asistanım - Tasarım</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #1a1118; color: white; overflow: hidden; }
+#header {
+  position: fixed; top: 0; left: 0; right: 0; height: 50px;
+  background: rgba(26,17,24,0.95); display: flex; align-items: center;
+  padding: 0 20px; gap: 16px; z-index: 100; border-bottom: 1px solid #333;
+}
+#header h2 { font-size: 1rem; background: linear-gradient(90deg,#e84855,#7b4fd6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+#hosgeldin { font-size: 0.85rem; color: #aaa; margin-left: auto; }
+#toplam { font-size: 0.9rem; font-weight: 700; color: #2bbfa0; }
+#canvas-container { position: fixed; top: 50px; left: 220px; right: 280px; bottom: 0; }
+canvas { width: 100% !important; height: 100% !important; }
+#sol-panel {
+  position: fixed; top: 50px; left: 0; width: 220px; bottom: 0;
+  background: #221830; padding: 16px; overflow-y: auto; border-right: 1px solid #333;
+}
+#sol-panel h3 { font-size: 0.8rem; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.1em; }
+#oda-form input {
+  width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 8px;
+  border: 1px solid #444; background: #1a1118; color: white; font-size: 0.85rem;
+}
+#oda-form button {
+  width: 100%; padding: 9px; border-radius: 8px; border: none;
+  background: linear-gradient(135deg,#7b4fd6,#e84855); color: white;
+  font-weight: 700; cursor: pointer; font-size: 0.85rem;
+}
+#sag-panel {
+  position: fixed; top: 50px; right: 0; width: 280px; bottom: 0;
+  background: #221830; border-left: 1px solid #333; overflow-y: auto;
+}
+.sekme-bar { display: flex; border-bottom: 1px solid #333; }
+.sekme { flex: 1; padding: 10px; text-align: center; font-size: 0.75rem; font-weight: 600; color: #888; cursor: pointer; }
+.sekme.active { color: #7b4fd6; border-bottom: 2px solid #7b4fd6; }
+#mobilya-listesi { padding: 12px; }
+.mobilya-kart {
+  background: #1a1118; border-radius: 10px; padding: 10px 12px;
+  margin-bottom: 8px; cursor: pointer; border: 1px solid #333;
+  transition: border-color 0.2s;
+}
+.mobilya-kart:hover { border-color: #7b4fd6; }
+.mobilya-ad { font-size: 0.85rem; font-weight: 600; }
+.mobilya-fiyat { font-size: 0.75rem; color: #2bbfa0; margin-top: 3px; }
+.mobilya-kat { font-size: 0.7rem; color: #666; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h2>DEKOR ASİSTANIM</h2>
+  <span id="hosgeldin">Hoş geldin!</span>
+  <span id="toplam">Toplam: ₺0</span>
+</div>
+
+<div id="sol-panel">
+  <h3>Oda Boyutu</h3>
+  <div id="oda-form">
+    <input type="number" id="oda-en" placeholder="En (metre)" value="5">
+    <input type="number" id="oda-boy" placeholder="Boy (metre)" value="4">
+    <button onclick="odaOlustur()">3D Oda Oluştur</button>
+  </div>
+</div>
+
+<div id="canvas-container"></div>
+
+<div id="sag-panel">
+  <div class="sekme-bar">
+    <div class="sekme active">Mobilyalar</div>
+  </div>
+  <div id="mobilya-listesi">Yükleniyor...</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Kullanıcı kontrolü
+const ad = localStorage.getItem('ad');
+if (ad) document.getElementById('hosgeldin').textContent = 'Hoş geldin, ' + ad + '!';
+
+// Three.js kurulum
+const container = document.getElementById('canvas-container');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1118);
+
+const camera = new THREE.PerspectiveCamera(60, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+camera.position.set(0, 8, 12);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(container.offsetWidth, container.offsetHeight);
+container.appendChild(renderer.domElement);
+
+// Işık
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+scene.add(ambientLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+dirLight.position.set(5, 10, 5);
+scene.add(dirLight);
+
+// Mouse kontrolü
+let isDragging = false, prevMouse = { x: 0, y: 0 };
+let spherical = { theta: 0, phi: Math.PI / 3, radius: 15 };
+
+renderer.domElement.addEventListener('mousedown', e => { isDragging = true; prevMouse = { x: e.clientX, y: e.clientY }; });
+renderer.domElement.addEventListener('mouseup', () => isDragging = false);
+renderer.domElement.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  spherical.theta -= (e.clientX - prevMouse.x) * 0.01;
+  spherical.phi -= (e.clientY - prevMouse.y) * 0.01;
+  spherical.phi = Math.max(0.1, Math.min(Math.PI / 2, spherical.phi));
+  prevMouse = { x: e.clientX, y: e.clientY };
+  camera.position.set(
+    spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta),
+    spherical.radius * Math.cos(spherical.phi),
+    spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta)
+  );
+  camera.lookAt(0, 0, 0);
+});
+renderer.domElement.addEventListener('wheel', e => {
+  spherical.radius = Math.max(5, Math.min(30, spherical.radius + e.deltaY * 0.02));
+  camera.position.setLength(spherical.radius);
+});
+
+let odaNesneleri = [];
+let sepet = [];
+let toplam = 0;
+
+function odaOlustur() {
+  odaNesneleri.forEach(n => scene.remove(n));
+  odaNesneleri = [];
+  const en = parseFloat(document.getElementById('oda-en').value) || 5;
+  const boy = parseFloat(document.getElementById('oda-boy').value) || 4;
+  const yukseklik = 3;
+  const mat = (renk) => new THREE.MeshLambertMaterial({ color: renk, side: THREE.BackSide });
+  const geo = (w, h, d) => new THREE.BoxGeometry(w, h, d);
+  const oda = new THREE.Mesh(geo(en, yukseklik, boy), mat(0x2a1f3d));
+  oda.position.set(0, yukseklik / 2, 0);
+  scene.add(oda); odaNesneleri.push(oda);
+  const zemin = new THREE.Mesh(new THREE.PlaneGeometry(en, boy), new THREE.MeshLambertMaterial({ color: 0x8B6914 }));
+  zemin.rotation.x = -Math.PI / 2;
+  scene.add(zemin); odaNesneleri.push(zemin);
+  const izgara = new THREE.GridHelper(Math.max(en, boy), 10, 0x444444, 0x333333);
+  scene.add(izgara); odaNesneleri.push(izgara);
+  spherical.radius = Math.max(en, boy) * 2;
+  camera.position.set(0, spherical.radius * 0.6, spherical.radius);
+  camera.lookAt(0, 0, 0);
+}
+
+function mobilyaEkle(mobilya) {
+  const renkler = { 'Oturma Odası': 0x4a90d9, 'Yatak Odası': 0x9b59b6, 'Yemek Odası': 0xe67e22, 'Çalışma Odası': 0x2ecc71, 'Aydınlatma': 0xf1c40f, 'Aksesuar': 0xe74c3c };
+  const renk = renkler[mobilya.kategori] || 0x888888;
+  const geo = new THREE.BoxGeometry(1, 0.8, 0.8);
+  const mat = new THREE.MeshLambertMaterial({ color: renk });
+  const mesh = new THREE.Mesh(geo, mat);
+  const rastgele = () => (Math.random() - 0.5) * 3;
+  mesh.position.set(rastgele(), 0.4, rastgele());
+  scene.add(mesh);
+  sepet.push(mobilya.fiyat);
+  toplam += parseFloat(mobilya.fiyat);
+  document.getElementById('toplam').textContent = 'Toplam: ₺' + toplam.toLocaleString('tr-TR');
+}
+
+// Mobilyaları yükle
+fetch('http://localhost:3000/api/furniture')
+  .then(r => r.json())
+  .then(data => {
+    const liste = document.getElementById('mobilya-listesi');
+    liste.innerHTML = '';
+    data.forEach(m => {
+      const kart = document.createElement('div');
+      kart.className = 'mobilya-kart';
+      kart.innerHTML = `<div class="mobilya-ad">${m.ad}</div><div class="mobilya-kat">${m.kategori}</div><div class="mobilya-fiyat">₺${parseFloat(m.fiyat).toLocaleString('tr-TR')}</div>`;
+      kart.onclick = () => mobilyaEkle(m);
+      liste.appendChild(kart);
+    });
+  });
+
+odaOlustur();
+
+function animate() { requestAnimationFrame(animate); renderer.render(scene, camera); }
+animate();
+
+window.addEventListener('resize', () => {
+  camera.aspect = container.offsetWidth / container.offsetHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(container.offsetWidth, container.offsetHeight);
+});
+</script>
+</body>
+</html>
