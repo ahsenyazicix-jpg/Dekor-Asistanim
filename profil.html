@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dekor Asistanım - Profil</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #f5f0ff; min-height: 100vh; }
+#header {
+  background: linear-gradient(135deg, #1a1118, #2d1b4e);
+  padding: 16px 32px; display: flex; align-items: center; gap: 16px;
+}
+#header h1 { font-size: 1.2rem; background: linear-gradient(90deg,#e84855,#7b4fd6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+#header a { margin-left: auto; color: white; text-decoration: none; font-size: 0.85rem; opacity: 0.7; }
+#header a:hover { opacity: 1; }
+.hero {
+  background: linear-gradient(135deg, #2d1b4e, #1a1118);
+  padding: 40px 32px; color: white; text-align: center;
+}
+.hero h2 { font-size: 1.8rem; margin-bottom: 8px; }
+.hero p { color: rgba(255,255,255,0.6); font-size: 0.9rem; }
+.yeni-btn {
+  display: inline-block; margin-top: 20px; padding: 12px 28px;
+  background: linear-gradient(135deg,#7b4fd6,#e84855); color: white;
+  border-radius: 99px; text-decoration: none; font-weight: 700; font-size: 0.9rem;
+}
+main { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+h3 { font-size: 1rem; color: #333; margin-bottom: 16px; font-weight: 700; }
+#tasarim-listesi { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.tasarim-kart {
+  background: white; border-radius: 16px; padding: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08); border: 2px solid #ede0d4;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.tasarim-kart:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+.tasarim-baslik { font-size: 1rem; font-weight: 700; color: #1a1118; margin-bottom: 8px; }
+.tasarim-detay { font-size: 0.8rem; color: #888; margin-bottom: 4px; }
+.tasarim-fiyat { font-size: 0.9rem; font-weight: 700; color: #2bbfa0; margin: 12px 0; }
+.devam-btn {
+  display: block; width: 100%; padding: 10px; text-align: center;
+  background: linear-gradient(135deg,#7b4fd6,#e84855); color: white;
+  border: none; border-radius: 10px; font-weight: 700; cursor: pointer;
+  font-size: 0.85rem; text-decoration: none;
+}
+.bos { text-align: center; padding: 60px 20px; color: #aaa; }
+.bos p { margin-bottom: 16px; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h1>DEKOR ASİSTANIM</h1>
+  <a href="tasarim.html">+ Yeni Tasarım</a>
+  <a href="login.html" onclick="cikisYap()">Çıkış</a>
+</div>
+
+<div class="hero">
+  <h2 id="profil-ad">Profilim</h2>
+  <p>Kaydettiğin tasarımlar burada</p>
+  <a href="tasarim.html" class="yeni-btn">+ Yeni Tasarım Oluştur</a>
+</div>
+
+<main>
+  <h3>Tasarımlarım</h3>
+  <div id="tasarim-listesi">Yükleniyor...</div>
+</main>
+
+<script>
+const token = localStorage.getItem('token');
+const ad = localStorage.getItem('ad');
+
+if (!token) window.location.href = 'login.html';
+if (ad) document.getElementById('profil-ad').textContent = ad + "'in Tasarımları";
+
+function cikisYap() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('ad');
+}
+
+fetch('http://localhost:3000/api/designs', {
+  headers: { 'Authorization': token }
+})
+.then(r => r.json())
+.then(data => {
+  const liste = document.getElementById('tasarim-listesi');
+  if (!data.length) {
+    liste.innerHTML = '<div class="bos"><p>Henüz tasarımın yok.</p></div>';
+    return;
+  }
+  liste.innerHTML = '';
+  data.forEach(t => {
+    const veri = JSON.parse(t.veri);
+    const mobilyaSayisi = veri.mobilyalar ? veri.mobilyalar.length : 0;
+    const toplamFiyat = veri.mobilyalar ? veri.mobilyalar.reduce((a,m) => a + parseFloat(m.fiyat), 0) : 0;
+    const tarih = new Date(t.olusturulma).toLocaleDateString('tr-TR');
+    const kart = document.createElement('div');
+    kart.className = 'tasarim-kart';
+    kart.innerHTML = `
+      <div class="tasarim-baslik">${t.baslik}</div>
+      <div class="tasarim-detay">📅 ${tarih}</div>
+      <div class="tasarim-detay">🏠 Oda: ${veri.odaEn}m × ${veri.odaBoy}m</div>
+      <div class="tasarim-detay">🛋 ${mobilyaSayisi} mobilya</div>
+      <div class="tasarim-fiyat">₺${toplamFiyat.toLocaleString('tr-TR')}</div>
+      <a href="tasarim.html" class="devam-btn">Devam Et →</a>
+    `;
+    liste.appendChild(kart);
+  });
+});
+</script>
+</body>
+</html>
