@@ -78,7 +78,7 @@ function cikisYap() {
   localStorage.removeItem('ad');
 }
 
-fetch('http://localhost:3000/api/designs', {
+fetch('https://dekor-asistanim-production.up.railway.app/api/designs', {
   headers: { 'Authorization': token }
 })
 .then(r => r.json())
