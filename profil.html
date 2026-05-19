@@ -70,7 +70,7 @@ h3 { font-size: 1rem; color: #333; margin-bottom: 16px; font-weight: 700; }
 const token = localStorage.getItem('token');
 const ad = localStorage.getItem('ad');
 
-if (!token) window.location.href = 'login.html';
+if (!token) { window.location.href = 'login.html'; }
 if (ad) document.getElementById('profil-ad').textContent = ad + "'in Tasarımları";
 
 function cikisYap() {
