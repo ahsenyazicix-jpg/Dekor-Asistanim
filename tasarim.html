@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dekor Asistanım - Tasarım</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #1a1118; color: white; overflow: hidden; }
+#header {
+  position: fixed; top: 0; left: 0; right: 0; height: 50px;
+  background: rgba(26,17,24,0.95); display: flex; align-items: center;
+  padding: 0 20px; gap: 16px; z-index: 100; border-bottom: 1px solid #333;
+}
+#header h2 { font-size: 1rem; background: linear-gradient(90deg,#e84855,#7b4fd6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+#hosgeldin { font-size: 0.85rem; color: #aaa; margin-left: auto; }
+#toplam { font-size: 0.9rem; font-weight: 700; color: #2bbfa0; }
+#kaydet-btn {
+  padding: 8px 16px; background: linear-gradient(135deg,#2bbfa0,#3b82f6);
+  border: none; border-radius: 8px; color: white; font-weight: 700;
+  font-size: 0.8rem; cursor: pointer;
+}
+#canvas-container { position: fixed; top: 50px; left: 220px; right: 280px; bottom: 0; }
+#sol-panel {
+  position: fixed; top: 50px; left: 0; width: 220px; bottom: 0;
+  background: #221830; padding: 16px; overflow-y: auto; border-right: 1px solid #333;
+}
+#sol-panel h3 { font-size: 0.8rem; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.1em; }
+#oda-form input {
+  width: 100%; padding: 8px; margin-bottom: 8px; border-radius: 8px;
+  border: 1px solid #444; background: #1a1118; color: white; font-size: 0.85rem;
+}
+#oda-form button {
+  width: 100%; padding: 9px; border-radius: 8px; border: none;
+  background: linear-gradient(135deg,#7b4fd6,#e84855); color: white;
+  font-weight: 700; cursor: pointer; font-size: 0.85rem; margin-bottom: 8px;
+}
+#ipucu { font-size: 0.72rem; color: #666; text-align: center; margin-top: 8px; line-height: 1.5; }
+#sil-btn {
+  width: 100%; padding: 9px; border-radius: 8px; border: none;
+  background: #e84855; color: white; font-weight: 700; cursor: pointer;
+  font-size: 0.85rem; margin-top: 8px; display: none;
+}
+#sag-panel {
+  position: fixed; top: 50px; right: 0; width: 280px; bottom: 0;
+  background: #221830; border-left: 1px solid #333; overflow-y: auto;
+}
+.sekme-bar { display: flex; border-bottom: 1px solid #333; }
+.sekme { flex: 1; padding: 10px; text-align: center; font-size: 0.75rem; font-weight: 600; color: #888; cursor: pointer; }
+.sekme.active { color: #7b4fd6; border-bottom: 2px solid #7b4fd6; }
+#mobilya-listesi { padding: 12px; }
+.mobilya-kart {
+  background: #1a1118; border-radius: 10px; padding: 10px 12px;
+  margin-bottom: 8px; cursor: grab; border: 1px solid #333;
+  transition: border-color 0.2s; user-select: none;
+}
+.mobilya-kart:hover { border-color: #7b4fd6; }
+.mobilya-ad { font-size: 0.85rem; font-weight: 600; }
+.mobilya-fiyat { font-size: 0.75rem; color: #2bbfa0; margin-top: 3px; }
+.mobilya-kat { font-size: 0.7rem; color: #666; }
+#suruklenen {
+  position: fixed; pointer-events: none; z-index: 999;
+  background: rgba(123,79,214,0.9); padding: 6px 12px;
+  border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+  display: none; transform: translate(-50%, -50%);
+}
+#bilgi {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  background: rgba(43,191,160,0.9); padding: 8px 20px; border-radius: 99px;
+  font-size: 0.8rem; font-weight: 600; display: none; z-index: 200;
+}
+</style>
+</head>
+<body>
+
+<div id="header">
+  <h2>DEKOR ASİSTANIM</h2>
+  <span id="hosgeldin">Hoş geldin!</span>
+  <span id="toplam">Toplam: ₺0</span>
+  <button id="kaydet-btn" onclick="tasarimKaydet()">💾 Kaydet</button>
+</div>
+
+<div id="sol-panel">
+  <h3>Oda Boyutu</h3>
+  <div id="oda-form">
+    <input type="number" id="oda-en" placeholder="En (metre)" value="5">
+    <input type="number" id="oda-boy" placeholder="Boy (metre)" value="4">
+    <button onclick="odaOlustur()">3D Oda Oluştur</button>
+  </div>
+  <button id="sil-btn" onclick="seciliSil()">🗑 Seçili Mobilyayı Sil</button>
+  <div id="ipucu">💡 Panelden sürükle odaya bırak<br>Odadaki mobilyayı tutup taşı<br>Mobilyaya tıkla → sil butonu</div>
+</div>
+
+<div id="canvas-container"></div>
+<div id="suruklenen"></div>
+<div id="bilgi"></div>
+
+<div id="sag-panel">
+  <div class="sekme-bar">
+    <div class="sekme active">Mobilyalar</div>
+  </div>
+  <div id="mobilya-listesi">Yükleniyor...</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const ad = localStorage.getItem('ad');
+const token = localStorage.getItem('token');
+if (ad) document.getElementById('hosgeldin').textContent = 'Hoş geldin, ' + ad + '!';
+
+const container = document.getElementById('canvas-container');
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x1a1118);
+const camera = new THREE.PerspectiveCamera(60, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(container.offsetWidth, container.offsetHeight);
+container.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+dirLight.position.set(5, 10, 5);
+scene.add(dirLight);
+
+let spherical = { theta: 0.5, phi: 0.8, radius: 15 };
+let odaEn = 5, odaBoy = 4;
+let odaNesneleri = [], mobilyalar = [];
+let secili = null, toplam = 0;
+let panelSuruklenen = null;
+let odaTasima = false, kameraDonus = false;
+let prevMouse = { x: 0, y: 0 };
+const suruklenenEl = document.getElementById('suruklenen');
+
+function kameraGuncelle() {
+  camera.position.set(
+    spherical.radius * Math.sin(spherical.phi) * Math.sin(spherical.theta),
+    spherical.radius * Math.cos(spherical.phi),
+    spherical.radius * Math.sin(spherical.phi) * Math.cos(spherical.theta)
+  );
+  camera.lookAt(0, 0, 0);
+}
+kameraGuncelle();
+
+function zeminNoktasi(e) {
+  const rect = container.getBoundingClientRect();
+  const mouse = new THREE.Vector2(((e.clientX-rect.left)/rect.width)*2-1, -((e.clientY-rect.top)/rect.height)*2+1);
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(mouse, camera);
+  const zemin = new THREE.Plane(new THREE.Vector3(0,1,0), 0);
+  const hedef = new THREE.Vector3();
+  raycaster.ray.intersectPlane(zemin, hedef);
+  if (hedef) {
+    hedef.x = Math.max(-odaEn/2+0.6, Math.min(odaEn/2-0.6, hedef.x));
+    hedef.z = Math.max(-odaBoy/2+0.6, Math.min(odaBoy/2-0.6, hedef.z));
+  }
+  return hedef;
+}
+
+function mobilyaTikla(e) {
+  const rect = container.getBoundingClientRect();
+  const mouse = new THREE.Vector2(((e.clientX-rect.left)/rect.width)*2-1, -((e.clientY-rect.top)/rect.height)*2+1);
+  const raycaster = new THREE.Raycaster();
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(mobilyalar.map(m=>m.mesh));
+  if (intersects.length > 0) return mobilyalar.find(m=>m.mesh===intersects[0].object);
+  return null;
+}
+
+renderer.domElement.addEventListener('mousedown', e => {
+  const tiklanan = mobilyaTikla(e);
+  if (tiklanan) {
+    if (secili) secili.mesh.material.emissive.setHex(0x000000);
+    secili = tiklanan;
+    secili.mesh.material.emissive.setHex(0x442200);
+    document.getElementById('sil-btn').style.display = 'block';
+    odaTasima = true;
+    renderer.domElement.style.cursor = 'grabbing';
+  } else {
+    if (secili) { secili.mesh.material.emissive.setHex(0x000000); secili = null; document.getElementById('sil-btn').style.display = 'none'; }
+    kameraDonus = true;
+  }
+  prevMouse = { x: e.clientX, y: e.clientY };
+});
+
+window.addEventListener('mousemove', e => {
+  if (panelSuruklenen) { suruklenenEl.style.left=e.clientX+'px'; suruklenenEl.style.top=e.clientY+'px'; }
+  if (odaTasima && secili) { const p=zeminNoktasi(e); if(p) secili.mesh.position.set(p.x,0.4,p.z); }
+  if (kameraDonus && !odaTasima) {
+    spherical.theta -= (e.clientX-prevMouse.x)*0.01;
+    spherical.phi -= (e.clientY-prevMouse.y)*0.01;
+    spherical.phi = Math.max(0.1, Math.min(Math.PI/2.2, spherical.phi));
+    kameraGuncelle();
+  }
+  prevMouse = { x: e.clientX, y: e.clientY };
+});
+
+window.addEventListener('mouseup', e => {
+  odaTasima = false; kameraDonus = false;
+  if (panelSuruklenen) {
+    const rect = container.getBoundingClientRect();
+    if (e.clientX>=rect.left && e.clientX<=rect.right && e.clientY>=rect.top && e.clientY<=rect.bottom) {
+      const p = zeminNoktasi(e);
+      if (p) mobilyaEkle(panelSuruklenen, p.x, p.z);
+    }
+    panelSuruklenen = null;
+    suruklenenEl.style.display = 'none';
+  }
+});
+
+renderer.domElement.addEventListener('wheel', e => {
+  spherical.radius = Math.max(4, Math.min(35, spherical.radius+e.deltaY*0.02));
+  kameraGuncelle();
+});
+
+function odaOlustur() {
+  odaNesneleri.forEach(n=>scene.remove(n)); odaNesneleri=[];
+  odaEn = parseFloat(document.getElementById('oda-en').value)||5;
+  odaBoy = parseFloat(document.getElementById('oda-boy').value)||4;
+  const y=3;
+  const oda=new THREE.Mesh(new THREE.BoxGeometry(odaEn,y,odaBoy),new THREE.MeshLambertMaterial({color:0x2a1f3d,side:THREE.BackSide}));
+  oda.position.set(0,y/2,0); scene.add(oda); odaNesneleri.push(oda);
+  const zemin=new THREE.Mesh(new THREE.PlaneGeometry(odaEn,odaBoy),new THREE.MeshLambertMaterial({color:0x8B6914}));
+  zemin.rotation.x=-Math.PI/2; scene.add(zemin); odaNesneleri.push(zemin);
+  const izgara=new THREE.GridHelper(Math.max(odaEn,odaBoy)+2,12,0x444444,0x2a2a2a);
+  scene.add(izgara); odaNesneleri.push(izgara);
+  spherical.radius=Math.max(odaEn,odaBoy)*2.2; kameraGuncelle();
+}
+
+const renkler={'Oturma Odası':0x4a90d9,'Yatak Odası':0x9b59b6,'Yemek Odası':0xe67e22,'Çalışma Odası':0x2ecc71,'Aydınlatma':0xf1c40f,'Aksesuar':0xe74c3c};
+
+function mobilyaEkle(mobilya, x, z) {
+  const renk=renkler[mobilya.kategori]||0x888888;
+  const mesh=new THREE.Mesh(new THREE.BoxGeometry(1,0.8,0.8),new THREE.MeshLambertMaterial({color:renk}));
+  mesh.position.set(x,0.4,z); scene.add(mesh);
+  mobilyalar.push({mesh, mobilya, fiyat:parseFloat(mobilya.fiyat)});
+  toplam+=parseFloat(mobilya.fiyat);
+  document.getElementById('toplam').textContent='Toplam: ₺'+toplam.toLocaleString('tr-TR');
+}
+
+function seciliSil() {
+  if (!secili) return;
+  scene.remove(secili.mesh);
+  toplam-=secili.fiyat;
+  document.getElementById('toplam').textContent='Toplam: ₺'+toplam.toLocaleString('tr-TR');
+  mobilyalar=mobilyalar.filter(m=>m!==secili);
+  secili=null;
+  document.getElementById('sil-btn').style.display='none';
+}
+
+async function tasarimKaydet() {
+  if (!token) { alert('Lütfen giriş yapın!'); return; }
+  if (mobilyalar.length===0) { alert('Önce odaya mobilya ekleyin!'); return; }
+  const veri = {
+    odaEn, odaBoy,
+    mobilyalar: mobilyalar.map(m=>({
+      id: m.mobilya.id,
+      ad: m.mobilya.ad,
+      x: m.mesh.position.x,
+      z: m.mesh.position.z,
+      fiyat: m.fiyat
+    }))
+  };
+  const baslik = 'Tasarım ' + new Date().toLocaleDateString('tr-TR');
+  const r = await fetch('http://localhost:3000/api/designs', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({token, baslik, veri})
+  });
+  const data = await r.json();
+  if (data.mesaj) {
+    const bilgi = document.getElementById('bilgi');
+    bilgi.textContent = '✓ Tasarım kaydedildi!';
+    bilgi.style.display = 'block';
+    setTimeout(()=>bilgi.style.display='none', 2500);
+  }
+}
+
+fetch('http://localhost:3000/api/furniture')
+  .then(r=>r.json())
+  .then(data=>{
+    const liste=document.getElementById('mobilya-listesi');
+    liste.innerHTML='';
+    data.forEach(m=>{
+      const kart=document.createElement('div');
+      kart.className='mobilya-kart';
+      kart.innerHTML=`<div class="mobilya-ad">${m.ad}</div><div class="mobilya-kat">${m.kategori}</div><div class="mobilya-fiyat">₺${parseFloat(m.fiyat).toLocaleString('tr-TR')}</div>`;
+      kart.addEventListener('mousedown',()=>{panelSuruklenen=m;suruklenenEl.textContent=m.ad;suruklenenEl.style.display='block';});
+      liste.appendChild(kart);
+    });
+  });
+
+odaOlustur();
+function animate(){requestAnimationFrame(animate);renderer.render(scene,camera);}
+animate();
+window.addEventListener('resize',()=>{camera.aspect=container.offsetWidth/container.offsetHeight;camera.updateProjectionMatrix();renderer.setSize(container.offsetWidth,container.offsetHeight);});
+</script>
+</body>
+</html>

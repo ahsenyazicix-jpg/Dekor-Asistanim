@@ -2,197 +2,135 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Destek | Dekor Asistanım</title>
-
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-/* === RESET === */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #FFF8F0; color: #1A1118; }
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(26,17,24,0.95); backdrop-filter: blur(10px);
+  padding: 16px 40px; display: flex; align-items: center; gap: 32px;
 }
+.nav-logo { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; background: linear-gradient(90deg,#e84855,#7b4fd6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.nav-links { display: flex; gap: 24px; margin-left: auto; }
+.nav-links a { color: rgba(255,255,255,0.9); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: white; }
+.nav-btn { padding: 8px 20px; background: linear-gradient(135deg,#7b4fd6,#e84855); color: white !important; border-radius: 99px; font-weight: 700 !important; }
 
-html, body {
-    width: 100%;
-    height: 100%;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f2e6d9;
+.hero {
+  background: linear-gradient(135deg, #1A1118, #2D1B4E);
+  padding: 120px 40px 60px; text-align: center; position: relative; overflow: hidden;
 }
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(232,72,85,0.2) 0%, transparent 50%),
+              radial-gradient(circle at 70% 30%, rgba(123,79,214,0.25) 0%, transparent 50%);
+}
+.hero-content { position: relative; }
+.hero-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+.hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800; color: white; margin-bottom: 16px; }
+.hero p { color: rgba(255,255,255,0.6); font-size: 1rem; max-width: 600px; margin: 0 auto; line-height: 1.7; }
 
-/* === NAVBAR === */
-.navbar {
-    height: 80px;
-    background-color: #b89474;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    color: white;
-}
+main { max-width: 960px; margin: 0 auto; padding: 60px 24px; }
 
-.menu a {
-    color: white;
-    text-decoration: none;
-    margin-left: 25px;
-    font-size: 14px;
-}
+.sss-baslik { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; margin-bottom: 24px; }
+.sss-item { background: white; border-radius: 16px; padding: 24px; margin-bottom: 12px; border: 2px solid #EDE0D4; cursor: pointer; transition: border-color 0.2s; }
+.sss-item:hover { border-color: #7b4fd6; }
+.sss-soru { font-weight: 700; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
+.sss-cevap { font-size: 0.88rem; color: #5A5260; line-height: 1.7; margin-top: 12px; display: none; }
+.sss-item.acik .sss-cevap { display: block; }
+.sss-item.acik { border-color: #7b4fd6; }
+.ok { transition: transform 0.2s; }
+.sss-item.acik .ok { transform: rotate(180deg); }
 
-.menu a:hover {
-    text-decoration: underline;
-}
+.iletisim-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 48px; margin-bottom: 60px; }
+.iletisim-kart { background: white; border-radius: 18px; padding: 28px; text-align: center; border: 2px solid #EDE0D4; transition: transform 0.2s; }
+.iletisim-kart:hover { transform: translateY(-3px); }
+.iletisim-icon { font-size: 2rem; margin-bottom: 12px; }
+.iletisim-kart h3 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+.iletisim-kart p { font-size: 0.85rem; color: #7A6E78; }
 
-/* === SAYFA === */
-.page {
-    min-height: calc(100vh - 80px);
-    padding: 60px;
-}
-
-/* BAŞLIK */
-.page h1 {
-    font-size: 48px;
-    color: #b89474;
-    margin-bottom: 20px;
-}
-
-.page p.description {
-    font-size: 18px;
-    color: #7a5c45;
-    margin-bottom: 50px;
-    max-width: 800px;
-}
-
-/* === KARTLAR === */
-.support-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-}
-
-.card {
-    background: #fff;
-    border-radius: 6px;
-    padding: 30px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-}
-
-.card h3 {
-    color: #b89474;
-    margin-bottom: 15px;
-    font-size: 20px;
-}
-
-.card p {
-    font-size: 14px;
-    color: #555;
-    line-height: 1.6;
-}
-
-/* === İLETİŞİM === */
-.contact {
-    margin-top: 60px;
-    padding-top: 40px;
-    border-top: 1px solid #d9c3aa;
-}
-
-.contact h2 {
-    color: #b89474;
-    margin-bottom: 20px;
-}
-
-.contact p {
-    color: #555;
-    margin-bottom: 10px;
-}
-
-/* === MOBİL === */
-@media (max-width: 900px) {
-    .page {
-        padding: 30px;
-    }
-}
+footer { background: #1A1118; padding: 24px 40px; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
 </style>
 </head>
-
 <body>
 
-<header class="navbar">
-    <div class="logo">DEKOR</div>
+<nav>
+  <div class="nav-logo">DEKOR ASİSTANIM</div>
+  <div class="nav-links">
+    <a href="anasayfa.html">Anasayfa</a>
+    <a href="hakkimizda.html">Hakkımızda</a>
+    <a href="destek.html">Destek</a>
+    <a href="iletisim.html">İletişim</a>
+    <a href="login.html" class="nav-btn">Giriş Yap</a>
+  </div>
+</nav>
 
-    <nav class="menu">
-        <a href="index.html">Anasayfa</a>
-        <a href="destek.html">Destek</a>
-        <a href="hakkimizda.html">Hakkımızda</a>
-        <a href="iletisim.html">İletişim</a>
-    </nav>
-</header>
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">Yardım Merkezi</div>
+    <h1>Destek</h1>
+    <p>Aklındaki soruların cevaplarını burada bulabilirsin. Bulamazsan bize ulaş!</p>
+  </div>
+</div>
 
-<main class="page">
-    <h1>Destek Merkezi</h1>
-    <p class="description">
-        Dekor Asistanım platformunu kullanırken ihtiyaç duyduğunuz tüm bilgilere,
-        rehberlere ve destek kanallarına buradan ulaşabilirsiniz.
-    </p>
+<main>
+  <div class="sss-baslik">Sık Sorulan Sorular</div>
 
-    <section class="support-grid">
-        <div class="card">
-            <h3>Hesap & Üyelik</h3>
-            <p>
-                Hesap oluşturma, giriş problemleri, şifre yenileme ve kullanıcı bilgileri
-                ile ilgili tüm işlemler bu başlık altında yer alır.
-            </p>
-        </div>
+  <div class="sss-item" onclick="toggle(this)">
+    <div class="sss-soru">Dekor Asistanım ücretsiz mi? <span class="ok">▼</span></div>
+    <div class="sss-cevap">Evet! Temel özellikler tamamen ücretsiz. Hesap oluştur, 3D oda tasarla, mobilya ekle ve tasarımını kaydet — hepsi ücretsiz.</div>
+  </div>
 
-        <div class="card">
-            <h3>3D Tasarım & Showroom</h3>
-            <p>
-                3 boyutlu tasarım araçlarının kullanımı, showroom görüntüleme,
-                ürün ekleme ve sahne düzenleme konularında destek alabilirsiniz.
-            </p>
-        </div>
+  <div class="sss-item" onclick="toggle(this)">
+    <div class="sss-soru">Tasarımlarım kaydediliyor mu? <span class="ok">▼</span></div>
+    <div class="sss-cevap">Evet! Giriş yaptıktan sonra yaptığın tasarımlar veritabanına kaydedilir. Profil sayfandan istediğin zaman kaldığın yerden devam edebilirsin.</div>
+  </div>
 
-        <div class="card">
-            <h3>Fiyatlandırma & Teklif</h3>
-            <p>
-                Otomatik fiyat hesaplama, teklif oluşturma,
-                güncel fiyat listeleri ve kampanyalar hakkında bilgi alın.
-            </p>
-        </div>
+  <div class="sss-item" onclick="toggle(this)">
+    <div class="sss-soru">3D oda nasıl oluşturulur? <span class="ok">▼</span></div>
+    <div class="sss-cevap">Giriş yaptıktan sonra tasarım sayfasına git. Sol panelde odanın en ve boy değerlerini metre cinsinden gir, "3D Oda Oluştur" butonuna bas. Oda anında oluşur!</div>
+  </div>
 
-        <div class="card">
-            <h3>Sıkça Sorulan Sorular</h3>
-            <p>
-                En çok karşılaşılan soruların cevaplarını
-                hızlıca bulabilir, zamandan tasarruf edebilirsiniz.
-            </p>
-        </div>
+  <div class="sss-item" onclick="toggle(this)">
+    <div class="sss-soru">Mobilyaları nasıl eklerim? <span class="ok">▼</span></div>
+    <div class="sss-cevap">Sağ panelden istediğin mobilyayı fare ile basılı tut, 3D odanın üzerine sürükle ve bırak. Mobilya istediğin yere yerleşir. Taşımak için odada mobilyayı tutup sürükle.</div>
+  </div>
 
-        <div class="card">
-            <h3>Teknik Sorunlar</h3>
-            <p>
-                Sistem hataları, performans problemleri veya
-                beklenmeyen davranışlar için teknik destek alın.
-            </p>
-        </div>
+  <div class="sss-item" onclick="toggle(this)">
+    <div class="sss-soru">Fiyat nasıl hesaplanıyor? <span class="ok">▼</span></div>
+    <div class="sss-cevap">Odaya eklediğin her mobilyanın fiyatı üst panelde otomatik olarak toplanır. Mobilyayı silersen fiyat da düşer.</div>
+  </div>
 
-        <div class="card">
-            <h3>Eğitim & Rehberler</h3>
-            <p>
-                Platformu daha verimli kullanmanız için hazırlanan
-                eğitim içerikleri ve kullanım rehberleri.
-            </p>
-        </div>
-    </section>
+  
 
-    <section class="contact">
-        <h2>Bizimle İletişime Geçin</h2>
-        <p><strong>E-posta:</strong> destek@dekorasistanim.com</p>
-        <p><strong>Çalışma Saatleri:</strong> Hafta içi 09:00 – 18:00</p>
-        <p>
-            Destek talepleriniz en kısa sürede ilgili ekiplerimiz tarafından
-            değerlendirilir.
-        </p>
-    </section>
+  <div class="iletisim-grid">
+    <div class="iletisim-kart">
+      <div class="iletisim-icon">📧</div>
+      <h3>E-posta</h3>
+      <p>destek@dekorasistanim.com</p>
+    </div>
+    <div class="iletisim-kart">
+      <div class="iletisim-icon">💬</div>
+      <h3>Canlı Destek</h3>
+      <p>Hafta içi 09:00 - 18:00</p>
+    </div>
+    <div class="iletisim-kart">
+      <div class="iletisim-icon">📖</div>
+      <h3>Dökümanlar</h3>
+      <p>Kullanım kılavuzu yakında</p>
+    </div>
+  </div>
 </main>
 
+<footer>© 2026 Dekor Asistanım · Tüm hakları saklıdır.</footer>
+
+<script>
+function toggle(el) {
+  el.classList.toggle('acik');
+}
+</script>
 </body>
 </html>
