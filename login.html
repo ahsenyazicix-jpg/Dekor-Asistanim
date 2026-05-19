@@ -90,7 +90,7 @@ function sekmeAc(sekme) {
 async function girisYap() {
   const email = document.getElementById('giris-email').value;
   const sifre = document.getElementById('giris-sifre').value;
-  const r = await fetch('http://localhost:3000/api/login', {
+  const r = await fetch('https://dekor-asistanim-production.up.railway.app/api/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, sifre })
@@ -113,7 +113,7 @@ async function kayitOl() {
   const ad = document.getElementById('kayit-ad').value;
   const email = document.getElementById('kayit-email').value;
   const sifre = document.getElementById('kayit-sifre').value;
-  const r = await fetch('http://localhost:3000/api/register', {
+  const r = await fetch('https://dekor-asistanim-production.up.railway.app/api/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ad, email, sifre })

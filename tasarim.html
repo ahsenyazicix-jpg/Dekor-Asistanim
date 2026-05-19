@@ -259,7 +259,7 @@ async function tasarimKaydet() {
     }))
   };
   const baslik = 'Tasarım ' + new Date().toLocaleDateString('tr-TR');
-  const r = await fetch('http://localhost:3000/api/designs', {
+  const r = await fetch('https://dekor-asistanim-production.up.railway.app/api/designs', {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
     body: JSON.stringify({token, baslik, veri})
@@ -273,7 +273,7 @@ async function tasarimKaydet() {
   }
 }
 
-fetch('http://localhost:3000/api/furniture')
+fetch('https://dekor-asistanim-production.up.railway.app/api/furniture')
   .then(r=>r.json())
   .then(data=>{
     const liste=document.getElementById('mobilya-listesi');
