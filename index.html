@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dekor Asistanım</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #FFF8F0; color: #1A1118; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(26,17,24,0.95); backdrop-filter: blur(10px);
+  padding: 16px 40px; display: flex; align-items: center; gap: 32px;
+}
+.nav-logo { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 800; background: linear-gradient(90deg,#e84855,#7b4fd6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.nav-links { display: flex; gap: 24px; margin-left: auto; }
+.nav-links a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.2s; }
+.nav-links a:hover { color: white; }
+.nav-btn { padding: 8px 20px; background: linear-gradient(135deg,#7b4fd6,#e84855); color: white !important; border-radius: 99px; font-weight: 700 !important; opacity: 1 !important; }
+
+.hero {
+  min-height: 100vh; background: linear-gradient(135deg, #1A1118 0%, #2D1B4E 50%, #1A1118 100%);
+  display: flex; align-items: center; justify-content: center; text-align: center;
+  padding: 100px 40px 60px; position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(232,72,85,0.2) 0%, transparent 50%),
+              radial-gradient(circle at 80% 30%, rgba(123,79,214,0.25) 0%, transparent 50%);
+}
+.hero-content { position: relative; max-width: 700px; }
+.hero-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 20px; }
+.hero h1 { font-family: 'Syne', sans-serif; font-size: clamp(3rem, 8vw, 6rem); font-weight: 800; line-height: 0.95; letter-spacing: -0.03em; margin-bottom: 24px; }
+.hero h1 .line1 { display: block; background: linear-gradient(90deg,#e84855,#7b4fd6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.hero h1 .line2 { display: block; background: linear-gradient(90deg,#7b4fd6,#2bbfa0,#3b82f6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.hero p { font-size: 1.1rem; color: rgba(255,255,255,0.6); margin-bottom: 40px; line-height: 1.7; }
+.hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-primary { padding: 14px 32px; background: linear-gradient(135deg,#7b4fd6,#e84855); color: white; border-radius: 99px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: opacity 0.2s, transform 0.2s; }
+.btn-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+.btn-secondary { padding: 14px 32px; border: 2px solid rgba(255,255,255,0.2); color: white; border-radius: 99px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: border-color 0.2s; }
+.btn-secondary:hover { border-color: rgba(255,255,255,0.5); }
+
+.ozellikler { padding: 80px 40px; max-width: 1100px; margin: 0 auto; }
+.ozellikler h2 { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; text-align: center; margin-bottom: 48px; }
+.ozellik-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+.ozellik-kart { background: white; border-radius: 20px; padding: 32px; border: 2px solid #EDE0D4; transition: transform 0.2s, box-shadow 0.2s; }
+.ozellik-kart:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+.ozellik-icon { font-size: 2.5rem; margin-bottom: 16px; }
+.ozellik-kart h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 10px; }
+.ozellik-kart p { font-size: 0.88rem; color: #7A6E78; line-height: 1.6; }
+
+.cta { background: linear-gradient(135deg, #1A1118, #2D1B4E); padding: 80px 40px; text-align: center; }
+.cta h2 { font-family: 'Syne', sans-serif; font-size: 2.2rem; font-weight: 800; color: white; margin-bottom: 16px; }
+.cta p { color: rgba(255,255,255,0.6); margin-bottom: 32px; font-size: 1rem; }
+
+footer { background: #1A1118; padding: 24px 40px; text-align: center; color: rgba(255,255,255,0.3); font-size: 0.8rem; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">DEKOR ASİSTANIM</div>
+  <div class="nav-links">
+    <a href="anasayfa.html">Anasayfa</a>
+    <a href="hakkimizda.html">Hakkımızda</a>
+    <a href="destek.html">Destek</a>
+    <a href="iletisim.html">İletişim</a>
+    <a href="login.html" class="nav-btn">Giriş Yap</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">3D Mekan Tasarım Platformu</div>
+    <h1>
+      <span class="line1">DEKOR</span>
+      <span class="line2">ASİSTANIM</span>
+    </h1>
+    <p>Odanı 3 boyutlu olarak tasarla, mobilyaları sürükle bırak,<br>anlık fiyat hesapla ve tasarımını kaydet.</p>
+    <div class="hero-btns">
+      <a href="login.html" class="btn-primary">🏠 Hemen Başla</a>
+      <a href="#ozellikler" class="btn-secondary">Nasıl Çalışır?</a>
+    </div>
+  </div>
+</section>
+
+<section class="ozellikler" id="ozellikler">
+  <h2>Neler Yapabilirsin?</h2>
+  <div class="ozellik-grid">
+    <div class="ozellik-kart">
+      <div class="ozellik-icon">🏠</div>
+      <h3>3D Oda Oluştur</h3>
+      <p>Odanın boyutlarını gir, gerçekçi 3 boyutlu bir oda anında oluşsun. Fareyle 360° döndür, zoom yap.</p>
+    </div>
+    <div class="ozellik-kart">
+      <div class="ozellik-icon">🛋️</div>
+      <h3>Mobilya Sürükle Bırak</h3>
+      <p>Yüzlerce mobilya arasından seçim yap, sürükle odana bırak. İstediğin yere taşı, beğenmediğini sil.</p>
+    </div>
+    <div class="ozellik-kart">
+      <div class="ozellik-icon">💰</div>
+      <h3>Anlık Fiyat Hesapla</h3>
+      <p>Eklediğin her mobilyanın fiyatı otomatik toplanır. Bütçeni aşmadan tasarımını tamamla.</p>
+    </div>
+    <div class="ozellik-kart">
+      <div class="ozellik-icon">💾</div>
+      <h3>Tasarımını Kaydet</h3>
+      <p>Yarım bıraktığın tasarıma istediğin zaman geri dön. Profil sayfanda tüm tasarımların sıralanır.</p>
+    </div>
+    <div class="ozellik-kart">
+      <div class="ozellik-icon">📐</div>
+      <h3>Gerçek Ölçüler</h3>
+      <p>Metre cinsinden oda boyutu gir. Mobilyalar gerçek orantılarda görünsün, hata yapma.</p>
+    </div>
+    <div class="ozellik-kart">
+      <div class="ozellik-icon">🎨</div>
+      <h3>Kategorilere Göre Filtrele</h3>
+      <p>Oturma odası, yatak odası, yemek odası — istediğin kategoriden mobilya seç.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2>Hayalindeki Odayı Tasarla</h2>
+  <p>Ücretsiz hesap aç, hemen başla.</p>
+  <a href="login.html" class="btn-primary">Ücretsiz Başla →</a>
+</section>
+
+<footer>
+  © 2026 Dekor Asistanım · Tüm hakları saklıdır.
+</footer>
+
+</body>
+</html>
