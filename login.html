@@ -102,7 +102,7 @@ async function girisYap() {
     localStorage.setItem('ad', data.ad);
     mesaj.className = 'mesaj';
     mesaj.textContent = 'Giriş başarılı! Yönlendiriliyorsunuz...';
-    setTimeout(() => window.location.href = 'profil.html', 1500);
+    setTimeout(() => window.location.href = 'anasayfa.html', 1500);
   } else {
     mesaj.className = 'mesaj hata';
     mesaj.textContent = data.hata || 'Hata oluştu';
