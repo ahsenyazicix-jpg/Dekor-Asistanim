@@ -67,7 +67,7 @@ footer { background: #1A1118; padding: 24px 40px; text-align: center; color: rgb
     <a href="hakkimizda.html">Hakkımızda</a>
     <a href="destek.html">Destek</a>
     <a href="iletisim.html">İletişim</a>
-    <a href="login.html" class="nav-btn">Giriş Yap</a>
+    <a href="login.html" class="nav-btn" id="nav-giris">Giriş Yap</a>
   </div>
 </nav>
 
@@ -132,5 +132,11 @@ footer { background: #1A1118; padding: 24px 40px; text-align: center; color: rgb
   © 2026 Dekor Asistanım · Tüm hakları saklıdır.
 </footer>
 
-</body>
-</html>
+<script>
+if (localStorage.getItem('token')) {
+  const btn = document.getElementById('nav-giris');
+  btn.textContent = 'Profilim';
+  btn.href = 'profil.html';
+}
+</script>
+</body></html>
