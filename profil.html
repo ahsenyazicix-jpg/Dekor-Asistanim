@@ -90,7 +90,7 @@ fetch('https://dekor-asistanim-production.up.railway.app/api/designs', {
   }
   liste.innerHTML = '';
   data.forEach(t => {
-    const veri = JSON.parse(t.veri);
+    const veri = typeof t.veri === 'string' ? JSON.parse(t.veri) : t.veri;
     const mobilyaSayisi = veri.mobilyalar ? veri.mobilyalar.length : 0;
     const toplamFiyat = veri.mobilyalar ? veri.mobilyalar.reduce((a,m) => a + parseFloat(m.fiyat), 0) : 0;
     const tarih = new Date(t.olusturulma).toLocaleDateString('tr-TR');
