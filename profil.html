@@ -102,11 +102,19 @@ fetch('https://dekor-asistanim-production.up.railway.app/api/designs', {
       <div class="tasarim-detay">🏠 Oda: ${veri.odaEn}m × ${veri.odaBoy}m</div>
       <div class="tasarim-detay">🛋 ${mobilyaSayisi} mobilya</div>
       <div class="tasarim-fiyat">₺${toplamFiyat.toLocaleString('tr-TR')}</div>
-      <a href="tasarim.html" class="devam-btn">Devam Et →</a>
-    `;
+<a href="tasarim.html" class="devam-btn">Devam Et →</a>
+<button onclick="tasarimSil(${t.id})" style="display:block;width:100%;padding:8px;margin-top:8px;background:#e84855;color:white;border:none;border-radius:10px;font-weight:700;cursor:pointer;">🗑 Sil</button>    `;
     liste.appendChild(kart);
   });
 });
-</script>
-</body>
+async function tasarimSil(id) {
+  if (!confirm('Bu tasarımı silmek istediğine emin misin?')) return;
+  const r = await fetch('https://dekor-asistanim-production.up.railway.app/api/designs/' + id, {
+    method: 'DELETE',
+    headers: { 'Authorization': token }
+  });
+  const data = await r.json();
+  if (data.mesaj) location.reload();
+}
+</script></body>
 </html>
