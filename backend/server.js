@@ -120,4 +120,15 @@ app.get('/api/designs', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+app.delete('/api/designs/:id', (req, res) => {
+  const token = req.headers.authorization;
+  try {
+    const decoded = jwt.verify(token, 'gizli_anahtar');
+    db.query('DELETE FROM designs WHERE id = ? AND user_id = ?', [req.params.id, decoded.id], (err) => {
+      if (err) return res.json({ hata: 'Silinemedi' });
+      res.json({ mesaj: 'Tasarım silindi' });
+    });
+  } catch(e) { res.json({ hata: 'Geçersiz token' }); }
+});
+
 app.listen(PORT, () => console.log('Sunucu ' + PORT + ' portunda çalışıyor...'));
