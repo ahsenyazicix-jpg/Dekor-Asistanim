@@ -80,7 +80,7 @@ footer { background: #1A1118; padding: 24px 40px; text-align: center; color: rgb
     </h1>
     <p>Odanı 3 boyutlu olarak tasarla, mobilyaları sürükle bırak,<br>anlık fiyat hesapla ve tasarımını kaydet.</p>
     <div class="hero-btns">
-      <a href="login.html" class="btn-primary">🏠 Hemen Başla</a>
+      <a href="javascript:void(0)" onclick="hemenBasla()" class="btn-primary">🏠 Hemen Başla</a>
       <a href="#ozellikler" class="btn-secondary">Nasıl Çalışır?</a>
     </div>
   </div>
@@ -139,4 +139,14 @@ if (localStorage.getItem('token')) {
   btn.href = 'profil.html';
 }
 </script>
-</body></html>
+<script>
+function hemenBasla() {
+  if (localStorage.getItem('token')) {
+    window.location.href = 'tasarim.html';
+  } else {
+    window.location.href = 'login.html';
+  }
+}
+</script>
+</body>
+</html>
